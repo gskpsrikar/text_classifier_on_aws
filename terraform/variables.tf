@@ -7,6 +7,7 @@ variable "resource_path" {
   type = string
   default = "tc"
 }
+
 variable "stage_name" {
   type = string
   default = "development"
@@ -35,4 +36,9 @@ variable "lambda_post_details" {
 variable "api_gateway_rest_api_name" {
   type = string
   default = "textClassifier_rest_api"
+}
+
+variable "dynamodb_model_registry" {
+  type = string
+  default = "model_registry"
 }

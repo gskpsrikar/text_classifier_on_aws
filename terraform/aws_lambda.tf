@@ -80,6 +80,12 @@ resource "aws_lambda_function" "lambda_get" {
   handler          = var.lambda_get_details["handler"]
   source_code_hash = data.archive_file.lambda_get.output_base64sha256
   runtime          = "python3.9"
+  environment {
+    variables = {
+      table_name = aws_dynamodb_table.model_registry.name,
+      primary_key = aws_dynamodb_table.model_registry.hash_key
+    }
+  }
 //  depends_on = [null_resource.install_python_dependencies_1]
 }
 
