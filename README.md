@@ -17,6 +17,7 @@ Do the following tasks in order
 - Compute: EC2
 
 ### Helpful references
-- [How do I deploy AWS Lambda using Terraform?](https://www.youtube.com/watch?v=JSR7U700h0U)
-- [Creating a serverless website using Terraform | AWS | Lambda | API Gateway](https://www.youtube.com/watch?v=wlVcso4Ut5o)
-- [Deploy Lambda Function and API Gateway using Terraform](https://levelup.gitconnected.com/deploy-lambda-function-and-api-gateway-using-terraform-d12cdc50dee8)
+1. [How do I deploy AWS Lambda using Terraform?](https://www.youtube.com/watch?v=JSR7U700h0U)
+2. [Creating a serverless website using Terraform | AWS | Lambda | API Gateway](https://www.youtube.com/watch?v=wlVcso4Ut5o)
+3. [Deploy Lambda Function and API Gateway using Terraform](https://levelup.gitconnected.com/deploy-lambda-function-and-api-gateway-using-terraform-d12cdc50dee8)
+4. [How to use Terraform variables](https://upcloud.com/resources/tutorials/terraform-variables)
