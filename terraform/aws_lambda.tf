@@ -1,5 +1,5 @@
-resource "aws_iam_role" "LambdaDynamoDBFullAccessRole" {
-  name = "LambdaDynamoDBFullAccessRole"
+resource "aws_iam_role" "LambdaFullAccessRole" {
+  name = "${var.project_name}_${var.stage_name}_LambdaFullAccessRole"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -15,49 +15,28 @@ resource "aws_iam_role" "LambdaDynamoDBFullAccessRole" {
   })
 }
 
-resource "aws_iam_role_policy" "dynamo_allow" {
+resource "aws_iam_role_policy" "allow_lambda" {
   policy = jsonencode({
     "Version": "2012-10-17",
     "Statement": [
       {
         "Action": [
-          "dynamodb:*"
+          "dynamodb:*",
+          "ecs:*",
+          "ecr:*"
         ],
         "Effect": "Allow",
         "Resource": "*"
       }
     ]
   })
-  role = aws_iam_role.LambdaDynamoDBFullAccessRole.id
+  role = aws_iam_role.LambdaFullAccessRole.id
 }
 
-//resource "null_resource" "install_python_dependencies_1" {
-//  provisioner "local-exec" {
-//    command = "bash ../scripts/dependencies.sh" # var.path_source_code
-//
-//    environment = {
-//      source_code_path = "lambdas/get_model_details" # var.path_source_code
-//      function_name = "lambda_hello_world_v1_get" # var.function_name
-//      path_module = path.module
-//      runtime = "python3.9"
-//      path_cwd = path.cwd
-//    }
-//  }
-//}
-
-//resource "null_resource" "install_python_dependencies_2" {
-//  provisioner "local-exec" {
-//    command = "bash ../scripts/dependencies.sh" # var.path_source_code
-//
-//    environment = {
-//      source_code_path = "lambdas/get_model_details" # var.path_source_code
-//      function_name = "lambda_hello_world_v1_post" # var.function_name
-//      path_module = path.module
-//      runtime = "python3.9"
-//      path_cwd = path.cwd
-//    }
-//  }
-//}
+resource "aws_iam_role_policy_attachment" "ECSTaskExecutionRolePolicyAttachmentLambda" {
+  role       = aws_iam_role.LambdaFullAccessRole.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
 ################################################################################
 # Lambdas
 ################################################################################
@@ -75,26 +54,33 @@ data "archive_file" "lambda_post" {
 
 resource "aws_lambda_function" "lambda_get" {
   filename         = var.lambda_get_details["output_path"]
-  function_name    = "${var.application_name}_${var.stage_name}_${var.lambda_get_details["function_name"]}"
-  role             = aws_iam_role.LambdaDynamoDBFullAccessRole.arn
+  function_name    = "${var.project_name}_${var.stage_name}_${var.lambda_get_details["function_name"]}"
+  role             = aws_iam_role.LambdaFullAccessRole.arn
   handler          = var.lambda_get_details["handler"]
   source_code_hash = data.archive_file.lambda_get.output_base64sha256
   runtime          = "python3.9"
   environment {
     variables = {
-      table_name = aws_dynamodb_table.model_registry.name,
-      primary_key = aws_dynamodb_table.model_registry.hash_key
+      TABLE_NAME = aws_dynamodb_table.model_registry.name,
+      PRIMARY_KEY = aws_dynamodb_table.model_registry.hash_key
     }
   }
-//  depends_on = [null_resource.install_python_dependencies_1]
 }
 
 resource "aws_lambda_function" "lambda_post" {
   filename         = var.lambda_post_details["output_path"]
-  function_name    = "${var.application_name}_${var.stage_name}_${var.lambda_post_details["function_name"]}"
-  role             = aws_iam_role.LambdaDynamoDBFullAccessRole.arn
+  function_name    = "${var.project_name}_${var.stage_name}_${var.lambda_post_details["function_name"]}"
+  role             = aws_iam_role.LambdaFullAccessRole.arn
   handler          = var.lambda_post_details["handler"]
   source_code_hash = data.archive_file.lambda_post.output_base64sha256
   runtime          = "python3.9"
-//  depends_on = [null_resource.install_python_dependencies_2]
+  environment {
+    variables = {
+      CLUSTER = aws_ecs_cluster.training_cluster.name,
+      GROUP = aws_ecs_task_definition.training_task_definition.family,
+      SUBNETS = var.default_subnets[0],
+      SECURITY_GROUPS = var.security_groups[0],
+      TASK_DEFINITION = "${var.project_name}_${var.stage_name}_training"
+    }
+  }
 }

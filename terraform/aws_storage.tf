@@ -1,6 +1,6 @@
 resource "aws_dynamodb_table" "model_registry" {
   hash_key = "model_name"
-  name = "${var.dynamodb_model_registry}_${var.stage_name}"
+  name = "${var.project_name}_${var.stage_name}_${var.dynamodb_model_registry}"
   read_capacity = 5
   write_capacity = 5
   attribute {

@@ -10,16 +10,16 @@ def lambda_handler(event, context):
     if query_string_parameters is None:
         return {
             "statusCode": 500,
-            "body": f"Query String Parameters are not passed. The '{os.environ['primary_key']}' parameter is required"
+            "body": f"Query String Parameters are not passed. The '{os.environ['PRIMARY_KEY']}' parameter is required"
         }
 
     try:
         dynamodb = boto3.client('dynamodb')
         response = dynamodb.get_item(
-            TableName=os.environ["table_name"],
+            TableName=os.environ["TABLE_NAME"],
             Key={
                 'model_name': {
-                    'S': query_string_parameters[os.environ['primary_key']]
+                    'S': query_string_parameters[os.environ['PRIMARY_KEY']]
                 }
             }
         )
@@ -31,8 +31,8 @@ def lambda_handler(event, context):
         }
 
     if "Item" not in response:
-        response = f"Item '{query_string_parameters[os.environ['primary_key']]}' not found in the table" \
-                   f" '{os.environ['table_name']}'"
+        response = f"Item '{query_string_parameters[os.environ['PRIMARY_KEY']]}' not found in the table" \
+                   f" '{os.environ['TABLE_NAME']}'"
         return {
             'statusCode': 200,
             'body': response

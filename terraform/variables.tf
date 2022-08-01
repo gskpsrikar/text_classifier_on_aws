@@ -1,6 +1,15 @@
-variable "application_name" {
+variable "account_id" {
+  type = string
+}
+
+variable "project_name" {
   type = string
   default = "textClassifier"
+}
+
+variable "region_name" {
+  type = string
+  default = "us-east-1"
 }
 
 variable "resource_path" {
@@ -13,6 +22,15 @@ variable "stage_name" {
   default = "development"
 }
 
+variable "default_subnets" {
+  type = list
+  default = ["subnet-xxxxxxxxxxxxxxxx"] # Use your own subnet ids
+}
+
+variable "security_groups" {
+  type = list
+  default = ["sg-xxxxxxxxxxxxxxxxx"] # Use your owm security group ids
+}
 variable "lambda_get_details" {
   type = map
   default = {
