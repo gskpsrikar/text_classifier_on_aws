@@ -1,2 +1,1 @@
-# machine_learning_with_microservices
-Break ML system into individual modules built as microservices
+### [(Click here) Divert to develop branch](https://github.com/gskpsrikar/text_classifier_on_aws/tree/develop)
