@@ -3,7 +3,7 @@ Accept user's request for machine learning model inference. Generates a predicti
 besides and responds to the user with the same prediction.
 
 ## Hosting
-1. Model is loaded when the Flask application is run.
+1. The model file is loaded when the Flask application is initiated.
 2. The Flask application is containerized with Docker.
 3. The Docker container is hosted on Amazon ECS.
 

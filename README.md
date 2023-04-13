@@ -2,4 +2,4 @@
 
 ### [Inference Pipeline](inference_pipeline/README.md)
 
-### [Shared Services](shared_services/README.md)
+### [Shared Services](terraform/README.md)

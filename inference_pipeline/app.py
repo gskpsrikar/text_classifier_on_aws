@@ -3,12 +3,17 @@ from application.models import IncomingData, InferenceResult
 from application.services import load_model
 
 model = "placeholder"
-
+print("Hello world")
 app = Flask("INFERENCE-APP")
 
 
-@app.route('/inference', methods=['GET'])
+@app.route('/', methods=['GET'])
 def health_check():
+    return jsonify(('Congrats the app is working'))
+
+
+@app.route('/inference', methods=['GET'])
+def inference():
     load_model()
     return jsonify({
         'status': 'ok',
