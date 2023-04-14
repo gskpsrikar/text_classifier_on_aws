@@ -1,47 +1,40 @@
-from flask import Flask, jsonify, request
-from application.models import IncomingData, InferenceResult
-from application.services import load_model
+from flask import Flask, request, render_template
+from application.helpers import download_model_artifacts_from_s3, make_prediction
 
-model = "placeholder"
-print("Hello world")
+from keras.models import load_model
+import pickle
+
 app = Flask("INFERENCE-APP")
+
+download_model_artifacts_from_s3()
+
+model = load_model("./downloads/model.h5")
+with open('./downloads/params.h5', 'rb') as handle:
+    params = pickle.load(handle)
+with open('./downloads/tokenizer.h5', 'rb') as handle:
+    tokenizer = pickle.load(handle)
 
 
 @app.route('/', methods=['GET'])
-def health_check():
-    return jsonify(('Congrats the app is working'))
+def index():
+    return render_template("index.html")
 
 
 @app.route('/inference', methods=['GET'])
 def inference():
-    load_model()
-    return jsonify({
-        'status': 'ok',
-        'model': model
-    })
+    return render_template("inference.html")
 
 
-@app.route('/inference/predict', methods=['POST'])
-def post_mock_data():
-    data = IncomingData(**request.get_json())
-
-    result = InferenceResult(**data.dict())
-    result.prediction = data.input_data
-
-    with app.app_context():
-        return jsonify({
-            "status": 'ok',
-            "message": result.dict()
-        })
+@app.route('/inference', methods=['POST'])
+def inference_post():
+    input_text = request.form['text']
+    prob = make_prediction(input_text, model, tokenizer, params)
+    return render_template(
+        'inference.html',
+        text=input_text,
+        prob=prob[0][0]
+    )
 
 
 if __name__ == "__main__":
-    MODE = "local_container"
-
-    if MODE == "local":
-        app.run(port=5000, debug=True)
-    elif MODE == "local_container":
-        print("Executing in container")
-        app.run(host="0.0.0.0", port=5000, debug=True)
-    elif MODE == "cloud_container":
-        pass
+    app.run(host="0.0.0.0", port=5000, debug=True)

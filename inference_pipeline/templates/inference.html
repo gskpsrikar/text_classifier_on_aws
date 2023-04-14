@@ -1,0 +1,34 @@
+<head>
+    <style>
+        input[name="text"] {
+            width: 1000px;
+            height: 25px;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+
+<h1>
+    Machine Learning: Inference Service
+</h1>
+<h2>
+    Enter your text here:
+</h2>
+</body>
+<form method="POST">
+    <input name="text" style="width: 500px; height: 100px;">
+    <input type="submit">
+</form>
+{% if text %}
+<p>Input text  : {{ text }}</p>
+{% endif %}
+{% if prob %}
+<p>Probability : {{ prob }}</p>
+{% endif %}
+
+
+<h3>
+    <p style="padding-left: 20px;"> <a href="/">Go to home</a></p>
+</h3>
+
+</html>

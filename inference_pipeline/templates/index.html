@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+<h1>
+    MACHINE LEARNING WORKSPACE
+</h1>
+<h2>
+    Active endpoints
+</h2>
+<h3>
+    <p style="padding-left: 20px;"> <a href="/inference">INFERENCE</a></p>
+</h3>
+<p style="padding-left: 40px;">
+    This POST method enables users to enter a text and receive the probability whether the text indicates a disaster or
+    not.
+    During startup, this method pulls the model file, tokenizer and other model related parameters from backend defined
+    S3 location on AWS.
+    Then these artifacts are loaded into memory and used whenever a new user request comes in.
+</p>
+</body>
+</html>

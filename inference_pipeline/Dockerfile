@@ -1,9 +1,10 @@
 FROM python:3.9-alpine
-WORKDIR /.
+WORKDIR ./
 
-COPY app.py .
+COPY app.py ./app
 COPY application/* ./application
-COPY requirements.txt .
+COPY templates/* ./templates
+COPY requirements.txt ./
 
 #RUN apt-get update
 #RUN apt-get install python
