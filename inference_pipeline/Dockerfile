@@ -1,15 +1,16 @@
-FROM python:3.9-alpine
+FROM python:3.10.1
 WORKDIR ./
 
-COPY app.py ./app
-COPY application/* ./application
-COPY templates/* ./templates
+COPY app.py ./
+ADD application application
+ADD templates templates
+ADD static static
 COPY requirements.txt ./
 
-#RUN apt-get update
-#RUN apt-get install python
+#RUN sudo apt-get update
+#RUN sudo apt-get install python
 
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --upgrade pip -r requirements.txt
 
 EXPOSE 5000
 

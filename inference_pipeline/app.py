@@ -17,12 +17,12 @@ with open('./downloads/tokenizer.h5', 'rb') as handle:
 
 @app.route('/', methods=['GET'])
 def index():
-    return render_template("index.html")
+    return render_template("homepage.html")
 
 
 @app.route('/inference', methods=['GET'])
 def inference():
-    return render_template("inference.html")
+    return render_template("disaster_inference.html", )
 
 
 @app.route('/inference', methods=['POST'])
@@ -30,7 +30,7 @@ def inference_post():
     input_text = request.form['text']
     prob = make_prediction(input_text, model, tokenizer, params)
     return render_template(
-        'inference.html',
+        'disaster_inference.html',
         text=input_text,
         prob=prob[0][0]
     )

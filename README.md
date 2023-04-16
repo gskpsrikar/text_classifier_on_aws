@@ -1,41 +1,75 @@
-*Last Updated: April 13 2023*
+*Last Updated: April 16 2023*
 
-### [(Click here) Divert to develop branch for documentation of user_management_service](https://github.com/gskpsrikar/text_classifier_on_aws/tree/develop)
+#### [(Click here) Divert to develop branch for documentation of user_management_service](https://github.com/gskpsrikar/text_classifier_on_aws/tree/develop)
 
-## End-to-end Machine Learning Pipeline on AWS
+*Warning: This project deploys resources to Amazon Web Services and may incur cost to those who are trying to reproduce
+the same. Please be aware of cloud costs.*
+# End-to-end Machine Learning Pipeline on AWS
 ###### #MLOps #MLEngineering #CloudDevelopment #AmazonWebServices #AWS
- 
 
-Deploying machine learning models into production is essential to realizing their full potential and generating value 
-from the insights they provide. Without deployment, the models may only be used in isolated, ad hoc analyses or 
-experiments, limiting their impact and reducing their ROI.
 
-In this repository, I make an attempt to deploy neural network models and build API's to allow users access the models easily.
+___
+## About
+The purpose of this project is to:
+- Develop a cloud solution to host language models.
+- Deploy and manage cloud infrastructure as code.
+- Serve machine learning model as REST API endpoint over web to end-user.
+___
+## Infrastructure overview
 
-I used Amazon Web Services to deploy a Text Classification model built on Keras. Terraform is used to automate 
-deployment and deletion of cloud resources thus saving potential oversight on resources. Flask API is used to wrap the 
-models into APIs.
-
-While my focus is on infrastructure, orchestration and identifying pitfalls in the process, I used simple HTML scripts to 
-render the UI for the application, so it will be to understand what this application actually does, especially those who
-are just starting MLOps and ML Engineering.
-
-I need some starting point when it comes to a Neural Network. So I chose to build a small network 
-using Keras trained to some extent and saved the model artifacts to AWS S3. The training is done on the 
+- **Cloud services**: Amazon Web Services
+- **Packaging and Deployment**: Docker, Terraform
+- **Backend**: Python, Flask, Boto3, Tensorflow
+- **Simple User Interface**: HTML
+___
+## Setting up environment with AWS
+Do the following tasks in order (refer to this) :
+1. Get AWS user access key. 
+2. Install AWS Tooklit for PyCharm. 
+3. Install AWS CLI: Open command prompt and configure your aws user account by running aws configure. 
+4. Docker. 
+5. AWS SAM CLI. 
+6. Install Terraform (for managing AWS resources).
+___
+## The Inference Service
+### Model
+For the language model, the training is done on the 
 [Disaster Tweet Classification dataset](https://www.kaggle.com/competitions/nlp-getting-started)
-which is publicly available on the Kaggle website.
+which is publicly available on the Kaggle website. Building and saving the necessary model files can be generated from 
+[gskpsrikar/ml-language-model-notebooks](https://github.com/gskpsrikar/ml-language-model-notebooks/blob/main/keras-text-classification-artifacts.ipynb).
 
-### Home Page of Application
-Shows all the active end-points and provides links to navigate to corresponding URLs.
-<img src="./documentation/images/homepage.png" alt="" width=60%>
+Upload the artifacts to the S3 locations in the bucket ```text-classifier-on-aws```
+```bazaar
+1. Model file      : disaster_tweets/disaster-tweet-model.h5
+2. Tokenizer       : disaster_tweets/disaster-tweet-tokenizer.pkl
+3. Model parameters: disaster_tweets/disaster-tweet-modelling-params.pkl
+```
+<br>
 
+### About the Inference service
+**Purpose**: Allow users to input a text and receive a prediction probability.<br><br>
+**Architecture (AWS Services)**
+- **Access Management and Networking**: AWS IAM, Amazon Virtual Private Cloud
+- **Storage**: S3, Elastic Container Registry
+- **Compute**: AWS Elastic Container Service Tasks (FARGATE)
 
-### The Inference Service
-- AWS Resources: Elastic Container Service, Elastic Container Registry.
+**Architecture diagram** <br>
+<img src="./documentation/images/inference pipeline.png" width=70%>
 
-#### Using the Inference endpoints to get a prediction
-A positive outcome example:  
-<img src="./documentation/images/inference-service-disaster-example.png" alt="" width=60%>
+**Demo example** <br><img src="documentation/images/inference-service-disaster-example.png" alt="" width=70%>
+___
+## Appendix
+### 1. Issues with tensorflow installation in Docker
+I faced a lot of issues while trying to install Tensorflow in the ```docker build``` step. The reason being ```pip``` is 
+unable to find the index for Tensorflow. I tried images like ``alpine, slim`` and so on, not couldn't resolve.Eventually
+what worked for me  is using this (below) base image for the docker.
+```docker
+FROM python:3.10.1
+```
 
-A negative outcome example:  
-<img src="./documentation/images/inference-service-not-disaster-example.png" alt="" width=60%>
+### 2. Default VPC vs Custom VPC
+To keep it simple (rather say easy), use the default VPC instead of creating a new VPC as that would involve steps to 
+create Routing table, Internet Gateway, attaching Routing table to Internet Gateway. If you are okay with using default
+VPC that comes with the AWS User Account, I suggest use the same. 
+
+However, Security Groups could be configured to limit the IP traffic.

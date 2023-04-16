@@ -5,7 +5,7 @@ variable "AWS_REGION" {
 
 variable "ECR_REPOSITORY_FOR_ML_SERVICES" {
   type = string
-  default = "MachineLearningImageRepository"
+  default = "machine-learning-image-repository"
 }
 
 variable "SECURITY_GROUP_FOR_ML_SERVICES" {
@@ -33,7 +33,7 @@ variable "IAM_ROLE_FOR_INFERENCE_SERVICE" {
 
 variable "TEXT_CLASSIFIER_IMAGE_ARN" {
   type = string
-  default = "333344445555.dkr.ecr.us-east-1.amazonaws.com/ml_image_repository:text_classifier_inference_image"
+  default = "123456789123.dkr.ecr.us-east-1.amazonaws.com/machine-learning-image-repository:text_classifier_inference_image"
 }
 
 variable "ECS_TEXT_CLASSIFICATION_TASK_DEFINITION_NAME" {

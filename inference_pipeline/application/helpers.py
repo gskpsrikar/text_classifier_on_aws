@@ -1,6 +1,7 @@
 import re
-import boto3
+import os
 
+import boto3
 from keras.utils import pad_sequences
 
 
@@ -12,6 +13,8 @@ def get_all_s3_buckets():
 
 def download_model_artifacts_from_s3():
     # Load the Machine Learning model from S3
+    if not os.path.exists("./downloads"):
+        os.mkdir("./downloads")
 
     s3 = boto3.client('s3')
     bucket_name = 'text-classifier-on-aws'
