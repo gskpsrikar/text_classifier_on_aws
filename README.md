@@ -56,7 +56,7 @@ Upload the artifacts to the S3 locations in the bucket ```text-classifier-on-aws
 **Architecture diagram** <br>
 <img src="./documentation/images/inference pipeline.png" width=70%>
 
-**Demo example** <br><img src="documentation/images/inference-service-disaster-example.png" alt="" width=70%>
+**Demo example** <br><img src="./documentation/images/inference-service-disaster-example.png" alt="" width=70%>
 ___
 ## Appendix
 ### 1. Issues with tensorflow installation in Docker
